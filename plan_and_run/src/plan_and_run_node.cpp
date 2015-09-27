@@ -33,20 +33,24 @@ int main(int argc,char** argv)
   // initializing descartes
   application.initDescartes();
 
-  // moving to home position
-  application.moveHome();
+  while(ros::ok())
+  {
+    // moving to home position
+    application.moveHome();
 
-  // generating trajectory
-  plan_and_run::DescartesTrajectory traj;
-  application.generateTrajectory(traj);
+    // generating trajectory
+    plan_and_run::DescartesTrajectory traj;
+    application.generateTrajectory(traj);
 
 
-  // planning robot path
-  plan_and_run::DescartesTrajectory output_path;
-  application.planPath(traj,output_path);
+    // planning robot path
+    plan_and_run::DescartesTrajectory output_path;
+    application.planPath(traj,output_path);
 
-  // running robot path
-  application.runPath(output_path);
+    // running robot path
+    application.runPath(output_path);
+    ros::Duration(10).sleep();
+  }
 
   // exiting ros node
   spinner.stop();
