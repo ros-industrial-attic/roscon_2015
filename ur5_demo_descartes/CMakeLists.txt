@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(ur5_demo_descartes)
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED descartes_core descartes_moveit pluginlib moveit_core roscpp tf_conversions)
+find_package(catkin REQUIRED descartes_core descartes_moveit pluginlib moveit_core roscpp tf_conversions ur_kinematics)
 
 find_package(rosconsole_bridge REQUIRED)
 find_package(LAPACK REQUIRED)
