@@ -21,6 +21,7 @@
   <run_depend>descartes_core</run_depend>
   <run_depend>descartes_planner</run_depend>
   <run_depend>descartes_moveit</run_depend>
+  <run_depend>industrial_robot_simulator</run_depend>
   <run_depend>moveit_msgs</run_depend>
   <run_depend>moveit_ros_planning_interface</run_depend>
   <run_depend>ur5_demo_descartes</run_depend>

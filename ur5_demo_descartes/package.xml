@@ -18,6 +18,7 @@
   <build_depend>liblapack-dev</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>tf_conversions</build_depend>
+  <build_depend>ur_kinematics</build_depend>
 
   <run_depend>descartes_core</run_depend>
   <run_depend>descartes_moveit</run_depend>
@@ -26,6 +27,7 @@
   <run_depend>liblapack-dev</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>tf_conversions</run_depend>
+  <run_depend>ur_kinematics</run_depend>
 
   <export>
     <descartes_core plugin="${prefix}/ur5_demo_descartes_plugins.xml"/>
