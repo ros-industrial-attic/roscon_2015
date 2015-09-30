@@ -140,6 +140,7 @@ protected:
   descartes_core::RobotModelPtr robot_model_ptr_; /* Performs tasks specific to the Robot
                                                      such IK, FK and collision detection*/
   descartes_planner::SparsePlanner planner_;      /* Plans a smooth robot path given a trajectory of points */
+  //descartes_planner::DensePlanner planner_;
 
 };
 

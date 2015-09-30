@@ -50,6 +50,9 @@ void DemoApplication::initDescartes()
     exit(-1);
   }
 
+  //Turn on collision checking.
+  robot_model_ptr_->setCheckCollisions(true);
+
   /*  Fill Code:
    * Goal:
    * - Initialize the Descartes path planner by calling "planner_.initialize(...)".

@@ -28,6 +28,7 @@ void DemoApplication::planPath(DescartesTrajectory& input_traj,DescartesTrajecto
    *    begins and ends near desirable joint configurations.  It also saves time by not having the
    *    planner search through potential path solutions whose start and end configurations are less adequate.
    */
+/*
   std::vector<double> start_pose, end_pose;
   if(input_traj.front()->getClosestJointPose(config_.seed_pose,*robot_model_ptr_,start_pose) &&
       input_traj.back()->getClosestJointPose(config_.seed_pose,*robot_model_ptr_,end_pose))
@@ -51,6 +52,7 @@ void DemoApplication::planPath(DescartesTrajectory& input_traj,DescartesTrajecto
     ROS_ERROR_STREAM("Failed to find closest joint pose to seed pose at the start or end of trajectory");
     exit(-1);
   }
+*/
 
   // planning robot path
   /*  Fill Code:

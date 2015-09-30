@@ -61,7 +61,8 @@ void DemoApplication::generateTrajectory(DescartesTrajectory& traj)
 
     descartes_core::TrajectoryPtPtr pt = descartes_core::TrajectoryPtPtr(
         new descartes_trajectory::AxialSymmetricPt(pose,ORIENTATION_INCREMENT,
-                                                   descartes_trajectory::AxialSymmetricPt::FreeAxis::Z_AXIS) );
+                                                   descartes_trajectory::AxialSymmetricPt::FreeAxis::Z_AXIS,
+                                                    descartes_core::TimingConstraint(0.5) ) );
 
     // saving points into trajectory
     traj.push_back(pt);
