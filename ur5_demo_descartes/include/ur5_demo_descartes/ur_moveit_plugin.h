@@ -115,7 +115,7 @@ namespace ur_kinematics
     /**
 * @brief Default constructor
 */
-    URKinematicsPlugin();
+    URKinematicsPlugin(const std::string& prefix);
 
     virtual bool getPositionIK(const geometry_msgs::Pose &ik_pose,
                                const std::vector<double> &ik_seed_state,
@@ -160,6 +160,12 @@ namespace ur_kinematics
                                std::vector<geometry_msgs::Pose> &poses) const;
 
     virtual bool initialize(const std::string &robot_description,
+                            const std::string &group_name,
+                            const std::string &base_name,
+                            const std::string &tip_name,
+                            double search_discretization);
+
+    virtual bool initialize(robot_model::RobotModelConstPtr robot_model,
                             const std::string &group_name,
                             const std::string &base_name,
                             const std::string &tip_name,
@@ -252,7 +258,7 @@ namespace ur_kinematics
 
     mutable random_numbers::RandomNumberGenerator random_number_generator_;
 
-    robot_model::RobotModelPtr robot_model_;
+    robot_model::RobotModelConstPtr robot_model_;
 
     robot_state::RobotStatePtr state_, state_2_;
 
@@ -261,7 +267,7 @@ namespace ur_kinematics
 
     // Storage required for when the set of redundant joints is reset
     bool position_ik_; //whether this solver is only being used for position ik
-    robot_model::JointModelGroup* joint_model_group_;
+    const robot_model::JointModelGroup* joint_model_group_;
     double max_solver_iterations_;
     double epsilon_;
     std::vector<kdl_kinematics_plugin::JointMimic> mimic_joints_;
