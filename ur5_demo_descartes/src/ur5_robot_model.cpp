@@ -10,7 +10,9 @@
 namespace ur5_demo_descartes
 {
 
-UR5RobotModel::UR5RobotModel()
+UR5RobotModel::UR5RobotModel(const std::string& prefix)
+  : ur_kinematics::URKinematicsPlugin(prefix) // init base class
+  , prefix_(prefix)
 {
   // TODO Auto-generated constructor stub
 
@@ -22,34 +24,80 @@ UR5RobotModel::~UR5RobotModel()
 }
 
 bool UR5RobotModel::initialize(const std::string &robot_description, const std::string& group_name,
-                          const std::string& world_frame,const std::string& tcp_frame)
+                               const std::string& world_frame, const std::string& tcp_frame)
 {
-  check_collisions_ = true;
-  if(!MoveitStateAdapter::initialize(robot_description,group_name,world_frame,tcp_frame))
+  if(!MoveitStateAdapter::initialize(robot_description, group_name, world_frame, tcp_frame))
   {
     ROS_ERROR_STREAM("MoveitStateAdapter from within UR5 robot model failed to initialize");
     return false;
   }
 
+  std::string ikfast_base_link, ikfast_tip_link;
+  ikfast_base_link = prefix_ + UR5_BASE_LINK;
+  ikfast_tip_link = prefix_ + UR5_TIP_LINK;
 
-  if(!ur_kinematics::URKinematicsPlugin::initialize(robot_description, group_name, UR5_BASE_LINK,UR5_TIP_LINK, 0.001))
+  if(!ur_kinematics::URKinematicsPlugin::initialize(robot_description, group_name, ikfast_base_link,
+                                                    ikfast_tip_link, 0.001))
   {
     ROS_ERROR_STREAM("URKinematicsPlugin from within UR5 robot model failed to initialize");
     return false;
   }
 
+  return initializeHelper(group_name, world_frame, tcp_frame);
+}
+
+bool UR5RobotModel::initialize(robot_model::RobotModelConstPtr robot_model, const std::string& group_name,
+                               const std::string& world_frame, const std::string& tcp_frame)
+{
+
+  if(!MoveitStateAdapter::initialize(robot_model, group_name, world_frame, tcp_frame))
+  {
+    ROS_ERROR_STREAM("MoveitStateAdapter from within UR5 robot model failed to initialize");
+    return false;
+  }
+
+  std::string ikfast_base_link, ikfast_tip_link;
+  ikfast_base_link = prefix_ + UR5_BASE_LINK;
+  ikfast_tip_link = prefix_ + UR5_TIP_LINK;
+
+  if(!ur_kinematics::URKinematicsPlugin::initialize(robot_model, group_name, ikfast_base_link,
+                                                    ikfast_tip_link, 0.001))
+  {
+    ROS_ERROR_STREAM("URKinematicsPlugin from within UR5 robot model failed to initialize");
+    return false;
+  }
+
+  return initializeHelper(group_name, world_frame, tcp_frame);
+}
+
+bool UR5RobotModel::initializeHelper(const std::string& group_name,
+                                     const std::string& world_frame, const std::string& tcp_frame)
+{
+  check_collisions_ = true;
+
   // initialize world transformations
   if(tcp_frame != getTipFrame())
   {
+    ROS_DEBUG_STREAM_NAMED(name_, "tcp_frame (" << tcp_frame << ") does not equal tip frame (" << getTipFrame() << "), creating transform");
     tool_to_tip_ = descartes_core::Frame(robot_state_->getFrameTransform(tcp_frame).inverse()*
                                          robot_state_->getFrameTransform(getTipFrame()));
   }
-  if(world_frame != getBaseFrame())
+  else
   {
-    world_to_base_ = descartes_core::Frame(world_to_root_.frame * robot_state_->getFrameTransform(getBaseFrame()));
+    tool_to_tip_ = descartes_core::Frame::Identity();
   }
 
-  ROS_WARN_STREAM("UR5 Descartes Robot Model initialized");
+  if(world_frame != getBaseFrame())
+  {
+    ROS_DEBUG_STREAM_NAMED(name_, "world_frame (" << world_frame << ") does not equal base frame (" << getBaseFrame() << "), creating transform");
+    world_to_base_ = descartes_core::Frame(world_to_root_.frame * robot_state_->getFrameTransform(getBaseFrame()));
+  }
+  else
+  {
+    world_to_base_ = descartes_core::Frame::Identity();
+  }
+
+  ROS_WARN_STREAM("UR5 Descartes Robot Model initialized with prefix: '" << prefix_ << "'");
 
   return true;
 }
@@ -128,7 +176,7 @@ bool UR5RobotModel::getAllIK(const Eigen::Affine3d &pose, std::vector<std::vecto
 
   if(joint_poses.empty())
   {
-    ROS_WARN_STREAM("GetAllIK has not solutions");
+    ROS_DEBUG_STREAM("GetAllIK has no solutions");
     rtn = false;
   }
   else
